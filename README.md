@@ -1,55 +1,45 @@
-E-Commerce and Inventory Management System (Backend)
+# E-Commerce and Inventory Management System — Backend API
 
-A RESTful backend and real-time notification service built with Node.js, Express.js, MongoDB, Mongoose, and Socket.IO. Designed around an MVC (Model-View-Controller) architecture, this system manages products, categories, customer shopping carts, atomic inventory updates, order lifecycles, sales/inventory analytics, and role-based access control (customer, seller, admin).
+A RESTful and real-time backend service built with **Node.js**, **Express.js**, **MongoDB**, **Mongoose**, and **Socket.IO** for managing products, shopping carts, atomic inventory updates, order lifecycles, and sales/stock analytics.
 
-Table of Contents
+---
 
-Features & Architecture
+## Tech Stack
 
-Prerequisites
+- **Runtime & Framework:** Node.js, Express.js (MVC Architecture)
+- **Database & ODM:** MongoDB, Mongoose (Schemas, Validation, Compound Indexes, Aggregation Pipelines)
+- **Authentication & Security:** `bcrypt`, JSON Web Tokens (`jsonwebtoken` — Access & Refresh Tokens), Role-Based Access Control (`customer`, `seller`, `admin`), `dotenv`
+- **Real-Time & Event-Driven:** Node.js `EventEmitter`, `Socket.IO` (JWT-authenticated socket connections & role/user rooms)
+- **Logging & Error Handling:** Custom request logger + centralized JSON error middleware
 
-Installation & Setup
+---
 
-Environment Variables
+## Project Structure
 
-Database Setup & Seed Data
-
-Running the Application
-
-Execution Flow (Request Lifecycle)
-
-REST API Endpoints
-
-Real-Time Communication (EventEmitter & Socket.IO)
-
-API Testing (Postman)
-
-Features & Architecture
-
-Directory Structure (MVC + Decoupled Events/Sockets)
-
+```text
 ├── config/
 │   └── db.js                  # MongoDB connection setup
 ├── controllers/
-│   ├── authController.js      # Register, login, token refresh, logout
-│   ├── userController.js      # Profile management & admin user controls
+│   ├── authController.js      # Register, login, refresh token, logout
+│   ├── userController.js      # Profile & admin user management
 │   ├── categoryController.js  # Category CRUD
-│   ├── productController.js   # Product CRUD, search, filtering, pagination
-│   ├── cartController.js      # Cart operations & server-side total calculation
-│   ├── orderController.js     # Checkout, atomic stock decrement, status transitions
-│   └── reportController.js    # MongoDB aggregation pipelines
+│   ├── productController.js   # Product CRUD, filtering, pagination
+│   ├── cartController.js      # Server-validated shopping cart
+│   ├── orderController.js     # Checkout, atomic stock updates, status transitions
+│   └── reportController.js    # MongoDB aggregation analytics
 ├── events/
-│   └── appEvents.js           # Node.js EventEmitter instance & listeners
+│   └── appEvents.js           # EventEmitter listeners & Socket.IO bridges
 ├── middleware/
-│   ├── authMiddleware.js      # JWT verification & RBAC authorization
-│   ├── validateMiddleware.js  # Request payload & ObjectId validation
-│   └── errorMiddleware.js     # Centralized JSON error handler & 404 handler
+│   ├── auth.js                # JWT verification & RBAC authorize(...)
+│   ├── errorHandler.js        # Centralized error formatter
+│   ├── logger.js              # HTTP request logger
+│   └── validate.js            # Request payload & ObjectId validation
 ├── models/
-│   ├── User.js                # User schema (bcrypt password hash, roles, refresh tokens)
-│   ├── Category.js            # Product category schema
-│   ├── Product.js             # Product schema with compound indexes & stock thresholds
-│   ├── Cart.js                # Customer shopping cart schema
-│   └── Order.js               # Order schema with price/title snapshots & simulated payment
+│   ├── User.js
+│   ├── Category.js
+│   ├── Product.js
+│   ├── Cart.js
+│   └── Order.js
 ├── routes/
 │   ├── authRoutes.js
 │   ├── userRoutes.js
@@ -61,9 +51,43 @@ Directory Structure (MVC + Decoupled Events/Sockets)
 ├── seed/
 │   └── seed.js                # Sample users, categories, products, and orders
 ├── sockets/
-│   └── socketHandler.js       # Socket.IO JWT handshake auth & role/user rooms
-├── .env.example               # Template for required environment variables
-├── server.js                  # Express & HTTP/Socket.IO server entry point
-└── README.md
+│   └── socketHandler.js       # Socket.IO JWT auth & room subscriptions
+├── .env.example
+├── package.json
+├── postman_collection.json
+└── server.js                  # Express + HTTP + Socket.IO entry point
+```
 
+---
 
+## Prerequisites
+
+- **Node.js** v18+
+- **MongoDB** (local instance or MongoDB Atlas URI)
+- **Postman** (or Thunder Client / cURL) for API testing
+
+---
+
+## Environment Variables
+
+Create a `.env` file in the root directory based on `.env.example` (do not commit `.env` to Git):
+
+```env
+PORT=5000
+MONGODB_URI=mongodb://127.0.0.1:27017/ecommerce_capstone
+JWT_ACCESS_SECRET=your_super_secret_access_key
+JWT_REFRESH_SECRET=your_super_secret_refresh_key
+JWT_ACCESS_EXPIRES_IN=15m
+JWT_REFRESH_EXPIRES_IN=7d
+```
+
+---
+
+## Installation & Setup
+
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+2. **Configure
