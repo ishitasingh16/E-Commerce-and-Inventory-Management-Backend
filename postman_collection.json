@@ -1,0 +1,227 @@
+{
+  "info": {
+    "name": "E-Commerce and Inventory API",
+    "description": "Success and error test cases. Set baseUrl, accessToken, refreshToken, customerId, productId, orderId and categoryId variables.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000" },
+    { "key": "accessToken", "value": "" },
+    { "key": "refreshToken", "value": "" },
+    { "key": "productId", "value": "" },
+    { "key": "categoryId", "value": "" },
+    { "key": "orderId", "value": "" },
+    { "key": "userId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/health" }
+    },
+    {
+      "name": "Auth - Login Customer",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"customer@example.com\",\n  \"password\": \"Password123!\"\n}" },
+        "url": "{{baseUrl}}/api/auth/login"
+      }
+    },
+    {
+      "name": "Auth - Login Seller",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"seller@example.com\",\n  \"password\": \"Password123!\"\n}" },
+        "url": "{{baseUrl}}/api/auth/login"
+      }
+    },
+    {
+      "name": "Auth - Login Admin",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"Password123!\"\n}" },
+        "url": "{{baseUrl}}/api/auth/login"
+      }
+    },
+    {
+      "name": "Auth - Register Validation 400",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{ \"name\": \"No Password\" }" },
+        "url": "{{baseUrl}}/api/auth/register"
+      }
+    },
+    {
+      "name": "Auth - Unauthorized Logout 401",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{}" },
+        "url": "{{baseUrl}}/api/auth/logout"
+      }
+    },
+    {
+      "name": "Auth - Refresh",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{ \"refreshToken\": \"{{refreshToken}}\" }" },
+        "url": "{{baseUrl}}/api/auth/refresh"
+      }
+    },
+    {
+      "name": "Users - Get Me",
+      "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": "{{baseUrl}}/api/users/me" }
+    },
+    {
+      "name": "Users - Update Me",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{ \"name\": \"Updated Customer\" }" },
+        "url": "{{baseUrl}}/api/users/me"
+      }
+    },
+    {
+      "name": "Users - Admin List",
+      "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": "{{baseUrl}}/api/users?page=1&limit=20" }
+    },
+    {
+      "name": "Users - Admin Role Forbidden 403",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{ \"role\": \"admin\" }" },
+        "url": "{{baseUrl}}/api/users/{{userId}}/role"
+      }
+    },
+    {
+      "name": "Categories - List",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/categories" }
+    },
+    {
+      "name": "Categories - Create Admin",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{ \"name\": \"Sports\", \"slug\": \"sports\", \"description\": \"Sports equipment\" }" },
+        "url": "{{baseUrl}}/api/categories"
+      }
+    },
+    {
+      "name": "Categories - Create Forbidden 403",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{ \"name\": \"Forbidden\", \"slug\": \"forbidden\" }" },
+        "url": "{{baseUrl}}/api/categories"
+      }
+    },
+    {
+      "name": "Products - List and Search",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/products?search=&sort=priceAsc&page=1&limit=10" }
+    },
+    {
+      "name": "Products - Get 404",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/products/507f1f77bcf86cd799439011" }
+    },
+    {
+      "name": "Products - Create Seller",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{ \"title\": \"Test Product\", \"description\": \"Seeded test product\", \"price\": 999, \"category\": \"{{categoryId}}\", \"stock\": 10, \"lowStockThreshold\": 2 }" },
+        "url": "{{baseUrl}}/api/products"
+      }
+    },
+    {
+      "name": "Cart - Get",
+      "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": "{{baseUrl}}/api/cart" }
+    },
+    {
+      "name": "Cart - Add Item",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{ \"productId\": \"{{productId}}\", \"quantity\": 1 }" },
+        "url": "{{baseUrl}}/api/cart/items"
+      }
+    },
+    {
+      "name": "Cart - Insufficient Stock 400",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{ \"productId\": \"{{productId}}\", \"quantity\": 999999 }" },
+        "url": "{{baseUrl}}/api/cart/items"
+      }
+    },
+    {
+      "name": "Cart - Update Item",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{ \"quantity\": 2 }" },
+        "url": "{{baseUrl}}/api/cart/items/{{productId}}"
+      }
+    },
+    {
+      "name": "Cart - Remove Item",
+      "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": "{{baseUrl}}/api/cart/items/{{productId}}" }
+    },
+    {
+      "name": "Orders - Checkout",
+      "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{}" }, "url": "{{baseUrl}}/api/orders/checkout" }
+    },
+    {
+      "name": "Orders - Checkout Empty Cart 400",
+      "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": "{{baseUrl}}/api/orders/checkout" }
+    },
+    {
+      "name": "Orders - List",
+      "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": "{{baseUrl}}/api/orders" }
+    },
+    {
+      "name": "Orders - Get",
+      "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": "{{baseUrl}}/api/orders/{{orderId}}" }
+    },
+    {
+      "name": "Orders - Invalid Status Transition 400",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{ \"orderStatus\": \"delivered\" }" },
+        "url": "{{baseUrl}}/api/orders/{{orderId}}/status"
+      }
+    },
+    {
+      "name": "Orders - Confirm",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{ \"orderStatus\": \"confirmed\" }" },
+        "url": "{{baseUrl}}/api/orders/{{orderId}}/status"
+      }
+    },
+    {
+      "name": "Orders - Cancel Restore Stock",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }, { "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{ \"orderStatus\": \"cancelled\" }" },
+        "url": "{{baseUrl}}/api/orders/{{orderId}}/status"
+      }
+    },
+    {
+      "name": "Reports - Sales Summary",
+      "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": "{{baseUrl}}/api/reports/sales-summary" }
+    },
+    {
+      "name": "Reports - Inventory",
+      "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": "{{baseUrl}}/api/reports/inventory" }
+    }
+  ]
+}
